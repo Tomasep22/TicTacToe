@@ -6,7 +6,11 @@ const gameBoard = (function() {
     function resetBoard() {
         board = ["", "", "", "", "", "", "", "", ""]
         gameEnded = false
+        const squares = boardNode.querySelectorAll('.square')
+        squares.forEach(square => square.textContent = '')
     }
+
+    document.querySelector('.rematch').addEventListener('click', resetBoard)
 
     function getColumns() {
         const columns = [
@@ -247,6 +251,11 @@ const gameFlow = (function() {
         return dificulty;
     }
 
+    function changeMark() {
+        players.map(player => player.marker === 'X' ? player.marker = 'O' : player.marker = 'X')
+        return
+    }
+
     document.playerForm.addEventListener('submit', function(e) {
         if(gameStarted) return
         e.preventDefault();
@@ -259,7 +268,13 @@ const gameFlow = (function() {
         addPlayer(player1);
         addPlayer(comp)
         gameStarted = true;
-        if(other === 'X') gameBoard.makeRandomMove(); 
+        if(other === 'X') gameBoard.makeRandomMove();
+
+        document.querySelector('.rematch').addEventListener('click', function() {
+            gameStarted = true;
+            changeMark();
+            if(players[1].isComp && players[1].marker === 'X') gameBoard.makeRandomMove();
+        })
     }) 
 
     return {
