@@ -3,6 +3,11 @@ const gameBoard = (function() {
     let board = ["", "", "", "", "", "", "", "", ""];
     let gameEnded = false
 
+    function resetBoard() {
+        board = ["", "", "", "", "", "", "", "", ""]
+        gameEnded = false
+    }
+
     function getColumns() {
         const columns = [
              [board[0], board[3], board[6]],
@@ -43,16 +48,19 @@ const gameBoard = (function() {
         squares.forEach(square => square.addEventListener('click', makePlayerMove))
     }
 
+
+
     function makePlayerMove() {
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
         const square = this;
         const index = parseInt(this.dataset.idx);
-        square.textContent = gameFlow.getPlayers()[0].marker
+        const mark = gameFlow.getPlayers()[0].marker
+        square.textContent = mark
         const text = this.textContent
         board[index] = text;
         gameFlow.addTurn()
-        const result = checkForAWin()
+        const result = checkForAWin(board)
         if(result !== 'Tie' && result !== null) {
         gameEnded = true
         console.log(result + ' df')
@@ -67,29 +75,46 @@ const gameBoard = (function() {
     function makeRandomMove() {
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
+        const doRandom = Math.random() * 100 > parseInt(gameFlow.getDificulty())
         let bestScore = -Infinity
         let bestMoveIndex;
-    
+
+        const mark = gameFlow.getPlayers()[1].marker
+        
+        if(!doRandom) {
+
         board.map((square, index) => {
             if(square !== '') return
-            board[index] = 'X'
+            board[index] = mark
             
             let score = minimax(board, 0, false);
+
             board[index] = ''
- 
+
             if (score > bestScore) {
                 bestScore = score
                 bestMoveIndex = index
             }
         })
 
-        board[bestMoveIndex] = 'X'
+        board[bestMoveIndex] = mark
 
         const squareNode = document.querySelector(`.square[data-idx='${bestMoveIndex}']`)
-        squareNode.textContent = 'X';
+        squareNode.textContent = mark;
+
+        } else {
+            console.log('random move')
+            const squares = Array.from(document.querySelectorAll('.square'))
+            const freeSquares = squares.filter(square => square.textContent === '')
+            const index = Math.floor(Math.random() * freeSquares.length)
+            const square = freeSquares[index]
+            square.textContent = mark
+            const boardIdx = square.dataset.idx
+            board[boardIdx] = mark
+        }
 
         gameFlow.addTurn()
-        const result = checkForAWin()
+        const result = checkForAWin(board)
         if(result !== 'Tie' && result !== null) {
         gameEnded = true
         console.log(result)
@@ -100,7 +125,7 @@ const gameBoard = (function() {
         } 
     }
 
-    function checkForAWin() {
+    function checkForAWin(final) {
 
        let x = 'X';
        let o = 'O';
@@ -124,7 +149,8 @@ const gameBoard = (function() {
             diagonal.every(square => square === 'X') ? win = x : ""
             diagonal.every(square => square === 'O') ? win = o : ""
        });
-       if(win === null && gameFlow.getTurns() > 8) return tie;
+
+       if(win === null && final.filter(square => square === '').length < 1) return tie;
        if(win) {
            return win
         } else {
@@ -140,9 +166,14 @@ const gameBoard = (function() {
     }
 
     function minimax(board, depth, isMaximixing) {
-        let result = checkForAWin()
-        if (result !== null) { 
-            return results[result]
+        let result = checkForAWin(board)
+        if (result !== null) {
+            if(gameFlow.getPlayers()[1].marker === 'O') {
+                return results[result] * -1
+            } else {
+                return results[result]
+            }
+            
         }
 
         if(isMaximixing) {
@@ -151,7 +182,7 @@ const gameBoard = (function() {
 
             board.map((square, index) => {
             if(square !== '') return
-            board[index] = 'X'
+            board[index] = gameFlow.getPlayers()[1].marker
             let score = minimax(board, depth + 1, false);
             board[index] = ''
             bestScore = Math.max(score, bestScore)
@@ -163,7 +194,7 @@ const gameBoard = (function() {
 
             board.map((square, index) => {
             if(square !== '') return
-            board[index] = 'O'
+            board[index] = gameFlow.getPlayers()[0].marker
             let score = minimax(board, depth + 1, true);
             board[index] = ''
  
@@ -189,6 +220,7 @@ const gameFlow = (function() {
     let players = [];
     let turns = 0;
     let gameStarted = false
+    let dificulty;
 
     function getTurns() {
         return turns
@@ -211,6 +243,10 @@ const gameFlow = (function() {
         return gameStarted;
     }
 
+    function getDificulty() {
+        return dificulty;
+    }
+
     document.playerForm.addEventListener('submit', function(e) {
         if(gameStarted) return
         e.preventDefault();
@@ -219,6 +255,7 @@ const gameFlow = (function() {
         const other = mark === 'X' ? 'O' : 'X';
         const player1 = playerFactory(name, mark, false);
         const comp = playerFactory('comp', other, true);
+        dificulty = this.Dificulty.value;
         addPlayer(player1);
         addPlayer(comp)
         gameStarted = true;
@@ -230,6 +267,7 @@ const gameFlow = (function() {
         addTurn,
         getPlayers,
         getGameStatus,
+        getDificulty,
     }
 }())
 
