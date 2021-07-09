@@ -11,7 +11,8 @@ const gameBoard = (function() {
     }
 
     document.querySelector('.rematch').addEventListener('click', resetBoard)
-
+    document.querySelector('.mainMenu').addEventListener('click', resetBoard)
+    
     function getColumns() {
         const columns = [
              [board[0], board[3], board[6]],
@@ -269,13 +270,22 @@ const gameFlow = (function() {
         addPlayer(comp)
         gameStarted = true;
         if(other === 'X') gameBoard.makeRandomMove();
+    })
+    
+    
+    document.querySelector('.rematch').addEventListener('click', function() {
+        gameStarted = true;
+        turns = 0
+        changeMark();
+        if(players[1].isComp && players[1].marker === 'X') gameBoard.makeRandomMove();
+    })
 
-        document.querySelector('.rematch').addEventListener('click', function() {
-            gameStarted = true;
-            changeMark();
-            if(players[1].isComp && players[1].marker === 'X') gameBoard.makeRandomMove();
-        })
-    }) 
+    document.querySelector('.mainMenu').addEventListener('click', function() {
+        gameStarted = false;
+        players = [];
+        turns = 0
+        dificulty = undefined;
+    })
 
     return {
         getTurns,
