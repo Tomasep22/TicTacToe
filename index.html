@@ -8,6 +8,10 @@
     <body>
         <h1 class="title">Tic Tac Toe</h1>
         <div class="tictactoe"></div>
+        <div class='gameMode'>
+            <button>1 Player</button>
+            <button>2 Players</button>
+        </div>
         <form name="playerForm">
             <input type="text" value="player1" name="player1" placeholder="player1" required>
             <select name="marker">
@@ -26,8 +30,12 @@
             </div>
             <input type="submit" value="Start Game" name="submit">
         </form>
+        <div>
+        <p class='result'>Result:</p>
+        <p class='score'>Scores</p>
         <button class='rematch'>Rematch</button>
         <button class="mainMenu">Main menu</button>
+        </div>
         <script src="script.js"></script>
     </body>
 </html>

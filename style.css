@@ -1,5 +1,6 @@
 html {
     background-color:rgb(238, 38, 88);
+    overflow-y: scroll;
 }
 
 body {

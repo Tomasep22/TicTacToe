@@ -58,33 +58,35 @@ const gameBoard = (function() {
     function makePlayerMove() {
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
+        const player = gameFlow.getPlayers()[0]
         const square = this;
         const index = parseInt(this.dataset.idx);
-        const mark = gameFlow.getPlayers()[0].marker
-        square.textContent = mark
-        const text = this.textContent
+        const mark = player.marker
+        square.textContent = mark;
+        const text = this.textContent;
         board[index] = text;
-        gameFlow.addTurn()
-        const result = checkForAWin(board)
+        gameFlow.addTurn();
+        const result = checkForAWin(board);
         if(result !== 'Tie' && result !== null) {
-        gameEnded = true
-        console.log(result + ' df')
+        gameEnded = true;
+        resultScreen(`${result} Wins!!!`, 1, player);
         }
         if(result === 'Tie') {
-        gameEnded = true
-        console.log(result + ' df')
+        gameEnded = true;
+        resultScreen(`It's a Tie`, 0, player);
         } 
-        if(!gameEnded) makeRandomMove()
+        if(!gameEnded) makeRandomMove();
     }
 
     function makeRandomMove() {
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
-        const doRandom = Math.random() * 100 > parseInt(gameFlow.getDificulty())
-        let bestScore = -Infinity
+        const player = gameFlow.getPlayers()[1]
+        const doRandom = Math.random() * 100 > parseInt(gameFlow.getDificulty());
+        let bestScore = -Infinity;
         let bestMoveIndex;
 
-        const mark = gameFlow.getPlayers()[1].marker
+        const mark = player.marker;
         
         if(!doRandom) {
 
@@ -122,11 +124,11 @@ const gameBoard = (function() {
         const result = checkForAWin(board)
         if(result !== 'Tie' && result !== null) {
         gameEnded = true
-        console.log(result)
+        resultScreen(`${result} Wins!!!`, 1, player)
         }
         if(result === 'Tie') {
         gameEnded = true
-        console.log(result)
+        resultScreen(`It's a Tie`, 0, player)
         } 
     }
 
@@ -209,6 +211,18 @@ const gameBoard = (function() {
         }
     }
 
+    function resultScreen(text, points, player) {
+        const resultP = document.querySelector('.result')
+        const scoreP = document.querySelector('.score')
+        scoreP.textContent = 'Scores: '
+        gameFlow.addScore(player, points)
+        scoreP.textContent += gameFlow.getPlayers().map(player => {
+            return `${player.name} : ${player.score} `
+        }).join('')
+        resultP.textContent = text
+        console.log(player, points)
+    }
+
     return {
         getBoard,
         displayBoard,
@@ -257,14 +271,18 @@ const gameFlow = (function() {
         return
     }
 
+    function addScore(player, points) {
+        player.score += points
+    }
+
     document.playerForm.addEventListener('submit', function(e) {
         if(gameStarted) return
         e.preventDefault();
         const name = this.player1.value
         const mark = this.marker.value
         const other = mark === 'X' ? 'O' : 'X';
-        const player1 = playerFactory(name, mark, false);
-        const comp = playerFactory('comp', other, true);
+        const player1 = playerFactory(name, mark, 0, false);
+        const comp = playerFactory('comp', other, 0, true);
         dificulty = this.Dificulty.value;
         addPlayer(player1);
         addPlayer(comp)
@@ -293,13 +311,15 @@ const gameFlow = (function() {
         getPlayers,
         getGameStatus,
         getDificulty,
+        addScore,
     }
 }())
 
-const playerFactory = (name, marker, isComp = false) => {
+const playerFactory = (name, marker, score, isComp = false) => {
     return {
         name,
         marker,
+        score,
         isComp,
     };
   };
