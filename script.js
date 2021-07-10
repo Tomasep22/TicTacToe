@@ -56,9 +56,10 @@ const gameBoard = (function() {
 
 
     function makePlayerMove() {
+        console.log('is ', gameFlow.getWhoMoves(), 'turn')
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
-        const player = gameFlow.getPlayers()[0]
+        const player = gameFlow.getWhoMoves()
         const square = this;
         const index = parseInt(this.dataset.idx);
         const mark = player.marker
@@ -74,14 +75,19 @@ const gameBoard = (function() {
         if(result === 'Tie') {
         gameEnded = true;
         resultScreen(`It's a Tie`, 0, player);
-        } 
-        if(!gameEnded) makeRandomMove();
+        }
+        if(result === null) {
+            gameFlow.nextTurn();
+        }
+        if(result === null && gameFlow.getPlayers()[1].isComp) {
+            makeCompMove();
+        }
     }
 
-    function makeRandomMove() {
+    function makeCompMove() {
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
-        const player = gameFlow.getPlayers()[1]
+        const player = gameFlow.getWhoMoves()
         const doRandom = Math.random() * 100 > parseInt(gameFlow.getDificulty());
         let bestScore = -Infinity;
         let bestMoveIndex;
@@ -110,7 +116,6 @@ const gameBoard = (function() {
         squareNode.textContent = mark;
 
         } else {
-            console.log('random move')
             const squares = Array.from(document.querySelectorAll('.square'))
             const freeSquares = squares.filter(square => square.textContent === '')
             const index = Math.floor(Math.random() * freeSquares.length)
@@ -122,6 +127,9 @@ const gameBoard = (function() {
 
         gameFlow.addTurn()
         const result = checkForAWin(board)
+        if(result === null) {
+            gameFlow.nextTurn();
+        }
         if(result !== 'Tie' && result !== null) {
         gameEnded = true
         resultScreen(`${result} Wins!!!`, 1, player)
@@ -229,7 +237,7 @@ const gameBoard = (function() {
         getColumns,
         getRows,
         getDiagonals,
-        makeRandomMove,
+        makeCompMove,
         minimax,
         board,
     }
@@ -240,6 +248,18 @@ const gameFlow = (function() {
     let turns = 0;
     let gameStarted = false
     let dificulty;
+    let turnToMove;
+
+    function getWhoMoves() {
+        return turnToMove
+    }
+
+    function nextTurn() {
+        console.log(turnToMove, ' Turn ended')
+        const player = players.find(player => player.marker !== turnToMove.marker)
+        turnToMove = player
+        console.log(turnToMove, ' Turn starts')
+    }
 
     function getTurns() {
         return turns
@@ -282,12 +302,26 @@ const gameFlow = (function() {
         const mark = this.marker.value
         const other = mark === 'X' ? 'O' : 'X';
         const player1 = playerFactory(name, mark, 0, false);
-        const comp = playerFactory('comp', other, 0, true);
+        const comp = playerFactory('Comp', other, 0, true);
         dificulty = this.Dificulty.value;
         addPlayer(player1);
         addPlayer(comp)
         gameStarted = true;
-        if(other === 'X') gameBoard.makeRandomMove();
+        turnToMove = players.find(player => player.marker === 'X')
+        if(other === 'X') gameBoard.makeCompMove();
+    })
+
+    document.twoPlayersForm.addEventListener('submit', function(e) {
+        if(gameStarted) return
+        e.preventDefault();
+        const name1 = this.player1.value;
+        const name2 = this.player2.value;
+        const player1 = playerFactory(name1, 'X', 0, false);
+        const player2 = playerFactory(name2, 'O', 0, false);
+        addPlayer(player1);
+        addPlayer(player2);
+        turnToMove = players[0];
+        gameStarted = true;
     })
     
     
@@ -295,7 +329,8 @@ const gameFlow = (function() {
         gameStarted = true;
         turns = 0
         changeMark();
-        if(players[1].isComp && players[1].marker === 'X') gameBoard.makeRandomMove();
+        turnToMove = players.find(player => player.marker === 'X')
+        if(players[1].isComp && players[1].marker === 'X') gameBoard.makeCompMove();
     })
 
     document.querySelector('.mainMenu').addEventListener('click', function() {
@@ -303,6 +338,7 @@ const gameFlow = (function() {
         players = [];
         turns = 0
         dificulty = undefined;
+        turnToMove = undefined;
     })
 
     return {
@@ -312,6 +348,8 @@ const gameFlow = (function() {
         getGameStatus,
         getDificulty,
         addScore,
+        nextTurn,
+        getWhoMoves,
     }
 }())
 
