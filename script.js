@@ -1,3 +1,98 @@
+const displayController = (function() {
+    document.querySelectorAll('.modeBtn').forEach(button => button.addEventListener('click', handleModeToForm))
+
+  function handleModeToForm() {
+      handleGameModeLeave();
+      const dataForm = parseInt(this.dataset.form)
+      const form = document.querySelector(`form[data-form="${dataForm}"]`)
+      handleFormEnter(form)
+  }
+
+  function handleGameModeEnter() {
+    const div = document.querySelector('.gameMode');
+    div.classList.add('enter')
+    setTimeout(() => {
+        div.classList.add('enter-active');
+    },501);
+  }
+
+  function handleGameModeLeave() {
+      const div = document.querySelector('.gameMode')
+      div.classList.remove('enter-active')
+      div.classList.remove('enter');
+
+  }
+
+  function handleFormEnter(form) {
+    form.classList.add('enter')
+    setTimeout(() => {
+        form.classList.add('enter-active');
+    },501);
+  }
+
+  function handleFormLeave(form) {
+    form.classList.remove('enter-active')
+    form.classList.remove('enter');
+  }
+
+  function handleFormToBoard(form) {
+    handleFormLeave(form)
+    handleBoardEnter();
+  }
+
+  function handleBoardEnter() {
+      const board = document.querySelector('.tictactoe');
+      board.classList.add('enter');
+      setTimeout(() => {
+        board.classList.add('enter-active');
+      },501);
+  }
+
+  function handleBoardLeave() {
+    const board = document.querySelector('.tictactoe');
+    board.classList.remove('enter-active');
+    board.classList.remove('enter');
+  }
+
+  function handleBoardToResult() {
+      handleBoardLeave();
+      handleResultEnter();
+  }
+
+  function handleResultToBoard() {
+      handleResultLeave();
+      handleBoardEnter();
+  }
+
+  function handleResultToGameMode() {
+      handleResultLeave();
+      handleGameModeEnter();
+  }
+
+  function handleResultEnter() {
+      const resultScreen = document.querySelector('.resultScreen');
+      resultScreen.classList.add('enter');
+      setTimeout(() => {
+        resultScreen.classList.add('enter-active');
+      },501);
+  }
+
+  function handleResultLeave() {
+    const resultScreen = document.querySelector('.resultScreen');
+    resultScreen.classList.remove('enter-active');
+    resultScreen.classList.remove('enter');
+  }
+
+  return {
+      handleResultToGameMode,
+      handleResultToBoard,
+      handleModeToForm,
+      handleBoardToResult,
+      handleFormToBoard,
+  }
+
+  }());
+
 const gameBoard = (function() {
     const boardNode = document.querySelector('.tictactoe');
     let board = ["", "", "", "", "", "", "", "", ""];
@@ -220,6 +315,7 @@ const gameBoard = (function() {
     }
 
     function resultScreen(text, points, player) {
+        displayController.handleBoardToResult()
         const resultP = document.querySelector('.result')
         const scoreP = document.querySelector('.score')
         scoreP.textContent = 'Scores: '
@@ -307,6 +403,7 @@ const gameFlow = (function() {
         addPlayer(player1);
         addPlayer(comp)
         gameStarted = true;
+        displayController.handleFormToBoard(this)
         turnToMove = players.find(player => player.marker === 'X')
         if(other === 'X') gameBoard.makeCompMove();
     })
@@ -322,10 +419,12 @@ const gameFlow = (function() {
         addPlayer(player2);
         turnToMove = players[0];
         gameStarted = true;
+        displayController.handleFormToBoard(this);
     })
     
     
     document.querySelector('.rematch').addEventListener('click', function() {
+        displayController.handleResultToBoard()
         gameStarted = true;
         turns = 0
         changeMark();
@@ -339,6 +438,7 @@ const gameFlow = (function() {
         turns = 0
         dificulty = undefined;
         turnToMove = undefined;
+        displayController.handleResultToGameMode();
     })
 
     return {

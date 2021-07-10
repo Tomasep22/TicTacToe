@@ -18,11 +18,22 @@ body {
 .tictactoe {
     height: 400px;
     width: 400px;
+    display: none;
+    transition: opacity 0.5s;  
+}
+
+.tictactoe.enter {
+    opacity: 0;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    
+}
 
+.tictactoe.enter.enter-active {
+    opacity: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
 }
 
 .square {
@@ -34,4 +45,106 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 50px;
+}
+
+.gameMode {
+    height: 400px;
+    width: 400px;
+    display: none;
+    transition: opacity 0.5s;
+}
+
+.gameMode.enter {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.gameMode.enter.enter-active {
+    height: 400px;
+    width: 400px;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    transition: opacity 0.5s;
+}
+
+.onePlayerForm {
+    height: 400px;
+    width: 400px;
+    display: none;
+    transition: opacity 0.5s;
+}
+
+.onePlayerForm.enter {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.onePlayerForm.enter.enter-active {
+    height: 400px;
+    width: 400px;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.twoPlayersForm {
+    height: 400px;
+    width: 400px;
+    display: none;
+    transition: opacity 0.5s;
+}
+
+.twoPlayersForm.enter {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.twoPlayersForm.enter.enter-active {
+    height: 400px;
+    width: 400px;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.resultScreen {
+    height: 400px;
+    width: 400px;
+    display: none;
+    transition: opacity 0.5s;
+}
+
+.resultScreen.enter {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.resultScreen.enter.enter-active {
+    transition: opacity 0.5s;
+    height: 400px;
+    width: 400px;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }

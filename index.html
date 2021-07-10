@@ -8,11 +8,11 @@
     <body>
         <h1 class="title">Tic Tac Toe</h1>
         <div class="tictactoe"></div>
-        <div class='gameMode'>
-            <button>1 Player</button>
-            <button>2 Players</button>
+        <div class="gameMode enter enter-active">
+            <button data-form="1" class="modeBtn">1 Player</button>
+            <button data-form="2" class="modeBtn">2 Players</button>
         </div>
-        <form name="playerForm">
+        <form data-form="1" name="playerForm" class="onePlayerForm">
             <input type="text" value="Player1" name="player1" placeholder="Player 1" required>
             <select name="marker">
                 <option value="X">X</option>
@@ -30,14 +30,14 @@
             </div>
             <input type="submit" value="Start Game" name="submit">
         </form>
-        <form name="twoPlayersForm">
+        <form data-form="2" name="twoPlayersForm" class="twoPlayersForm">
             <p>Player1 (X)</p>
             <input type="text" value="Player1" name="player1" placeholder="Player 1" required>
             <p>Player2 (O)</p>
             <input type="text" value="Player2" name="player2" placeholder="Player 2" required>
             <input type="submit" value="Start Game" name="submit">
         </form>
-        <div>
+        <div class='resultScreen'>
         <p class='result'>Result:</p>
         <p class='score'>Scores</p>
         <button class='rematch'>Rematch</button>
