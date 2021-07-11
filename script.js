@@ -355,10 +355,8 @@ const gameFlow = (function() {
     }
 
     function nextTurn() {
-        console.log(turnToMove, ' Turn ended')
         const player = players.find(player => player.marker !== turnToMove.marker)
-        turnToMove = player
-        console.log(turnToMove, ' Turn starts')
+        turnToMove = player;
     }
 
     function getTurns() {
