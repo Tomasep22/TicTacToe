@@ -55,8 +55,11 @@ const displayController = (function() {
   }
 
   function handleBoardToResult() {
+      setTimeout(() => {
       handleBoardLeave();
       handleResultEnter();
+      }, 500)
+      
   }
 
   function handleResultToBoard() {
@@ -151,13 +154,13 @@ const gameBoard = (function() {
 
 
     function makePlayerMove() {
-        console.log('is ', gameFlow.getWhoMoves(), 'turn')
         if(!gameFlow.getGameStatus()) return
         if(gameEnded) return
         const player = gameFlow.getWhoMoves()
         const square = this;
         const index = parseInt(this.dataset.idx);
         const mark = player.marker
+        if(square.textContent !== '') return
         square.textContent = mark;
         const text = this.textContent;
         board[index] = text;
@@ -188,51 +191,53 @@ const gameBoard = (function() {
         let bestMoveIndex;
 
         const mark = player.marker;
+
+        setTimeout(() => {
+            if(!doRandom) {
+
+                board.map((square, index) => {
+                    if(square !== '') return
+                    board[index] = mark
+                    
+                    let score = minimax(board, 0, false);
         
-        if(!doRandom) {
-
-        board.map((square, index) => {
-            if(square !== '') return
-            board[index] = mark
-            
-            let score = minimax(board, 0, false);
-
-            board[index] = ''
-
-            if (score > bestScore) {
-                bestScore = score
-                bestMoveIndex = index
-            }
-        })
-
-        board[bestMoveIndex] = mark
-
-        const squareNode = document.querySelector(`.square[data-idx='${bestMoveIndex}']`)
-        squareNode.textContent = mark;
-
-        } else {
-            const squares = Array.from(document.querySelectorAll('.square'))
-            const freeSquares = squares.filter(square => square.textContent === '')
-            const index = Math.floor(Math.random() * freeSquares.length)
-            const square = freeSquares[index]
-            square.textContent = mark
-            const boardIdx = square.dataset.idx
-            board[boardIdx] = mark
-        }
-
-        gameFlow.addTurn()
-        const result = checkForAWin(board)
-        if(result === null) {
-            gameFlow.nextTurn();
-        }
-        if(result !== 'Tie' && result !== null) {
-        gameEnded = true
-        resultScreen(`${result} Wins!!!`, 1, player)
-        }
-        if(result === 'Tie') {
-        gameEnded = true
-        resultScreen(`It's a Tie`, 0, player)
-        } 
+                    board[index] = ''
+        
+                    if (score > bestScore) {
+                        bestScore = score
+                        bestMoveIndex = index
+                    }
+                })
+        
+                board[bestMoveIndex] = mark
+        
+                const squareNode = document.querySelector(`.square[data-idx='${bestMoveIndex}']`)
+                squareNode.textContent = mark;
+        
+                } else {
+                    const squares = Array.from(document.querySelectorAll('.square'))
+                    const freeSquares = squares.filter(square => square.textContent === '')
+                    const index = Math.floor(Math.random() * freeSquares.length)
+                    const square = freeSquares[index]
+                    square.textContent = mark
+                    const boardIdx = square.dataset.idx
+                    board[boardIdx] = mark
+                }
+        
+                gameFlow.addTurn()
+                const result = checkForAWin(board)
+                if(result === null) {
+                    gameFlow.nextTurn();
+                }
+                if(result !== 'Tie' && result !== null) {
+                gameEnded = true
+                resultScreen(`${result} Wins!!!`, 1, player)
+                }
+                if(result === 'Tie') {
+                gameEnded = true
+                resultScreen(`It's a Tie`, 0, player)
+                }
+        },300);              
     }
 
     function checkForAWin(final) {
@@ -317,14 +322,13 @@ const gameBoard = (function() {
     function resultScreen(text, points, player) {
         displayController.handleBoardToResult()
         const resultP = document.querySelector('.result')
-        const scoreP = document.querySelector('.score')
-        scoreP.textContent = 'Scores: '
+        const scoreDiv = document.querySelector('.scoreDiv')
         gameFlow.addScore(player, points)
-        scoreP.textContent += gameFlow.getPlayers().map(player => {
-            return `${player.name} : ${player.score} `
+        scoreDiv.innerHTML = '';
+        scoreDiv.innerHTML += gameFlow.getPlayers().map(player => {
+            return `<span class='scoreP'><p> ${player.name}: ${player.score} </p></span>`
         }).join('')
         resultP.textContent = text
-        console.log(player, points)
     }
 
     return {

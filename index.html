@@ -7,41 +7,50 @@
     </head>
     <body>
         <h1 class="title">Tic Tac Toe</h1>
-        <div class="tictactoe"></div>
-        <div class="gameMode enter enter-active">
-            <button data-form="1" class="modeBtn">1 Player</button>
-            <button data-form="2" class="modeBtn">2 Players</button>
-        </div>
-        <form data-form="1" name="playerForm" class="onePlayerForm">
-            <input type="text" value="Player1" name="player1" placeholder="Player 1" required>
-            <select name="marker">
-                <option value="X">X</option>
-                <option value="O">O</option>
-            </select>
-            <div>
-                <p>Comp</p>
-                <select name="Dificulty">
-                    <option value="100">Impossible</option>
-                    <option value="90">Hard</option>
-                    <option value="75">Intermidiate</option>
-                    <option value="60">Easy</option>
-                                       
-                </select>
+        <div class ='container'>
+            <div class="tictactoe"></div>
+            <div class="gameMode enter enter-active">
+                <button data-form="1" class="modeBtn">1 Player</button>
+                <button data-form="2" class="modeBtn">2 Players</button>
             </div>
-            <input type="submit" value="Start Game" name="submit">
-        </form>
-        <form data-form="2" name="twoPlayersForm" class="twoPlayersForm">
-            <p>Player1 (X)</p>
-            <input type="text" value="Player1" name="player1" placeholder="Player 1" required>
-            <p>Player2 (O)</p>
-            <input type="text" value="Player2" name="player2" placeholder="Player 2" required>
-            <input type="submit" value="Start Game" name="submit">
-        </form>
-        <div class='resultScreen'>
-        <p class='result'>Result:</p>
-        <p class='score'>Scores</p>
-        <button class='rematch'>Rematch</button>
-        <button class="mainMenu">Main menu</button>
+            <form data-form="1" name="playerForm" class="onePlayerForm">
+                <div class='plInfo'>
+                <p>Name:</p>
+                <input id="onePlInput" type="text" value="Player1" name="player1" placeholder="Player 1" required>
+                <p>Pick:</p>
+                <select id="selectMark" name="marker">
+                    <option value="X">X</option>
+                    <option value="O">O</option>
+                </select>
+                </div>
+                <div class="compInfo">
+                    <p>Pick Computer Dificulty:</p>
+                    <select id="selectDif" name="Dificulty">
+                        <option value="100">Impossible</option>
+                        <option value="90">Hard</option>
+                        <option value="75">Intermidiate</option>
+                        <option value="60">Easy</option>
+                                        
+                    </select>
+                </div>
+                <input class="submitForm" type="submit" value="Start Game" name="submit">
+            </form>
+            <form data-form="2" name="twoPlayersForm" class="twoPlayersForm">
+                <p>Player1 (X)</p>
+                <input type="text" class='twoPlInput' value="Player1" name="player1" placeholder="Player 1" required>
+                <p>Player2 (O)</p>
+                <input type="text" class='twoPlInput' value="Player2" name="player2" placeholder="Player 2" required>
+                <input class="submitForm" type="submit" value="Start Game" name="submit">
+            </form>
+            <div class='resultScreen'>
+                <p class='result'>Result:</p>
+            <div class='scoreDiv'>
+            </div>
+            <div class='resultBtnDiv'>
+                <button class='rematch resultBtn'>Rematch</button>
+                <button class="mainMenu resultBtn">Main menu</button>
+            </div>
+            </div>
         </div>
         <script src="script.js"></script>
     </body>
